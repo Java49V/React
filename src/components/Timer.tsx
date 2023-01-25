@@ -1,42 +1,30 @@
-import { BlockList } from "net";
-import React, { useState } from "react";
-import timeZones from "../time-zones";
+import React from "react";
+import timeZones from "../time-zones_";
 import { Input } from "./Input";
 type TimerProps = {
   cityOrCountry: string;
 };
-export const Timer: React.FC<TimerProps> = (props) => {
-  let [timeZone, setTimeZone] = React.useState(
-    timeZones[timeZoneIndex(props.cityOrCountry)]?.name
-  );
-  let [timeZoneName, setTimeZoneName] = React.useState(
-    timeZone ? props.cityOrCountry : "Polska"
-  );
-  console.log(props.cityOrCountry);
-  const [time, setTime] = React.useState(new Date());
-
-  function timeZoneIndex(cityOrCountry: string): number {
-    return timeZones.findIndex((tz) =>
-      JSON.stringify(tz).includes('"' + cityOrCountry + '"')
-    );
+function findIndexZone(zoneName: string): number {
+    return timeZones.findIndex((timeZone) => {
+      return JSON.stringify(timeZone).includes('"' + zoneName + '"');
+    });
   }
-
-  function timeZoneProcess(cityOrCountry: string): string {
+export const Timer: React.FC<TimerProps> = (props) => {
+  const indexProps = findIndexZone(props.cityOrCountry);
+  const [timeZone, setTimeZone] = React.useState(timeZones[indexProps]?.name);
+  const timeZoneName = React.useRef(timeZone ? props.cityOrCountry : "Israel");
+  function processInput(value: string): string {
+    const index = findIndexZone(value);
     let res: string = "";
-    const indexZone: number = timeZoneIndex(cityOrCountry);
-    if (indexZone < 0) {
-      res = "Name of country " + cityOrCountry + " is wrong";
+    if (index < 0) {
+      res = "wrong country / city";
     } else {
-      setTimeZone(timeZones[indexZone].name);
-      setTimeZoneName(cityOrCountry);
+      setTimeZone(timeZones[index].name);
+      timeZoneName.current = value;
     }
     return res;
   }
-
-  function uniqueId(): string {
-    return new Date().toISOString();
-  }
-
+  const [time, setTime] = React.useState(new Date());
   function tick() {
     console.log("tick");
     setTime(new Date());
@@ -45,20 +33,27 @@ export const Timer: React.FC<TimerProps> = (props) => {
     const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
   }, []);
-
-  const pH: string = "enter country/city";
   return (
-    <div>
-      <h3>Time in {timeZoneName}</h3>
-      <h4>(Time zone: {timeZone})</h4>
+    <div
+      style={{
+        marginTop: "10vh",
+        borderStyle: "solid",
+        width: "15vw",
+        height: "30vh",
+      }}
+    >
+      <Input
+        inputProcess={processInput}
+        type={"text"}
+        placeholder="enter country/city"
+      />
+      <h3 style={{ display: "block", textAlign: "center", fontSize: "1.5em" }}>
+        Time in {timeZoneName.current}
+      </h3>
       <label style={{ display: "block", textAlign: "center", fontSize: "2em" }}>
         Time {time.toLocaleTimeString(undefined, { timeZone })}
       </label>
-      <Input
-        inputId={uniqueId()}
-        inputProcess={timeZoneProcess}
-        placeHolder={pH}
-      />
     </div>
   );
 };
+

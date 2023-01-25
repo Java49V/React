@@ -1,14 +1,19 @@
 import React from "react";
 type AlertProps = {
-    type: "warn"|"info"|"error";
-    message: string;
-}
-export const Alert: React.FC<AlertProps> = ({type, message}) => {
-    let  backGround: "red" | "green" | "yellow";
-    switch(type) {
-        case "error": backGround = "red"; break;
-        case "info": backGround = "green"; break;
-        case "warn": backGround = "yellow"
-    }
-    return <p style={{backgroundColor: backGround}}>{message}</p>
-}
+  type: "warning" | "info" | "error";
+  message: string;
+};
+export const Alert: React.FC<AlertProps> = ({ type, message }) => {
+  let backGround: "red" | "green" | "yellow";
+  switch (type) {
+    case "error":
+      backGround = "red";
+      break;
+    case "warning":
+      backGround = "yellow";
+      break;
+    case "info":
+      backGround = "green";
+  }
+  return <p style={{ fontSize:"0.3em", backgroundColor: backGround }}>{message}</p>;
+};
