@@ -12,7 +12,7 @@ function findIndexZone(zoneName: string): number {
 export const Timer: React.FC<TimerProps> = (props) => {
   const indexProps = findIndexZone(props.cityOrCountry);
   const [timeZone, setTimeZone] = React.useState(timeZones[indexProps]?.name);
-  const timeZoneName = React.useRef(timeZone ? props.cityOrCountry : "Israel");
+  const timeZoneName = React.useRef(timeZone ? props.cityOrCountry : "Poland");
   function processInput(value: string): string {
     const index = findIndexZone(value);
     let res: string = "";
