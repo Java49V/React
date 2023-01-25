@@ -1,31 +1,43 @@
-import { Input } from './components/Input';
 import React from 'react';
-
+import { Input } from './components/Input';
+import { Timer } from './components/Timer';
 
 
 function App() {
-  const properties: React.CSSProperties = {
-    display: "flex",
-    flexWrap: "wrap"
+  const flexColumn: React.CSSProperties = { display: "flex", flexDirection: "column" }
+  const flexRow: React.CSSProperties = { display: "flex", flexDirection: "row" , 
+  justifyContent: "space-around", width: "50vw", marginTop: "4vh"}
+  const [cityCountries, setCityCountries] = React.useState<string[]>([]);
+  function inputProcessFun(value: string): string {
+    const cityCountriesFromInput: string[] = value.split("#");
+    let res:string = '';
+    if(cityCountriesFromInput.length % 2 != 0) {
+      res = "There should be even number of the country/cities"
+    } else {
+        setCityCountries(cityCountriesFromInput.slice());
+    }
+    return res;
   }
-  const [colors,setcolors] = React.useState<string[]>([])
-function creatingDivs(value:string): string {
-    const colors: string[] = value.split("#") ;// red#green => ['red,'green']
-    setcolors(colors.slice());
-    return '';
-}
-function getDivs(colors: string[]): JSX.Element[]{
-  return colors.map(color => <div style={{width:"5vw" , height:"5vh",
-backgroundColor:color}}></div>)
+  function getTimers(): JSX.Element[] {
+    const res: JSX.Element[] = [];
+    for(let i = 0; i < cityCountries.length; i+=2) {
+      res.push(<div style={flexRow}>
+        <Timer cityOrCountry={cityCountries[i]} />
+        <Timer cityOrCountry={cityCountries[i + 1]} />
+      </div>)
+    }
+
+    return res;
+  }
+
+  return <div style={flexColumn}>
+    <Input placeHolder={'enter city/countries separated by #'}
+     inputProcess={inputProcessFun}/>
+     {getTimers()}
+    
+
+  </div>
+
 }
 
-return <section style={{display: "flex",flexDirection:"column"}}>
-   <Input placeHolder={'enter color separated by #'} inputProcess={creatingDivs}/> 
-    <section style={properties}>
-   {getDivs(colors)}
-    </section>
-
-  </section>
-
-}
 export default App;
