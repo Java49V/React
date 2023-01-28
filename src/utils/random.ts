@@ -47,6 +47,5 @@ export function getRandomDate(minYear: number, maxYear: number): Date {
   let maxDay: number =
     newYear % 4 === 0 ? nDays[newMonth] + 1 : nDays[newMonth];
   const newDay: number = getRandomNumber(minDay, maxDay, true, true);
-
   return new Date(newYear, newMonth, newDay);
 }
