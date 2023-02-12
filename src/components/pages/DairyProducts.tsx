@@ -1,1 +1,1 @@
-export const DairyProducts: React.FC = ()=> <h1>Dairy Products</h1>
+export const DairyProducts: React.FC = ()=> <h1>Dairy products</h1>
