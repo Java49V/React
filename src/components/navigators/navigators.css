@@ -5,6 +5,22 @@
     width: 80vw;
     list-style: none;
 }
+
+.product-list {
+    display: flex;
+    flex-direction: inherit;
+    justify-content: space-around;
+    width: 80vw;
+    list-style: none;
+}
+.layout-list {
+    display: flex;
+    flex-direction: inherit;
+    justify-content: space-around;
+    width: 80vw;
+    list-style: none;
+}
+
 @media(min-width: 560px) {
     .navigator-list {
         flex-direction: row;
