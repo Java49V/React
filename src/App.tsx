@@ -1,60 +1,30 @@
 import React from 'react';
-import './App.css';
-import { CounterMultiply } from './components/CounterMultiply';
-import { CounterSquare } from './components/CounterSquare';
-import { CounterUpdater } from './components/CounterUpdater';
-import { Login } from './components/Login';
-import { Logout } from './components/Logout';
-import { useSelector } from 'react-redux';
-import { Input } from './components/Input';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import './App.css'
+import { Layout } from './components/navigators/Layout';
+import { Products } from './components/navigators/Products';
+import { BreadProducts } from './components/pages/BreadProducts';
+import { Customers } from './components/pages/Customers';
+import { DairyProducts } from './components/pages/DairyProducts';
+import { Home } from './components/pages/Home';
+import { Orders } from './components/pages/Orders';
 
 function App() {
-  const auth: string = useSelector<any, string>((state) => state.auth.userName);
-  const [operand, setOperand] = React.useState(1);
-  const [factor, setFactor] = React.useState(10);
-  const ADMIN = 'admin';
+  return <BrowserRouter>
+      <Routes>
+          <Route path='/' element={<Layout/>}>
+              <Route index element={<Home/>}></Route>
+              <Route path='customers' element={<Customers/>}/>
+              <Route path='orders' element={<Orders/>}></Route>
+              <Route path='products' element={<Products/>}>
+                    <Route path='dairy' element={<DairyProducts/>}/>
+                    <Route path='bread' element={<BreadProducts/>}/>
+              </Route>
+          </Route>
+              
+      </Routes>
+  </BrowserRouter>
 
-  function validateName(userName: string): boolean {
-    return userName.includes(ADMIN);
-  }
-
-  return (
-    <div>
-      {auth && (
-        <div>
-          <p>user name: {auth}</p>
-          <Input
-            placeHolder={'Enter operand'}
-            inputProcess={function (value: string): string {
-              setOperand(+value);
-              return '';
-            }}
-          ></Input>
-          <Input
-            placeHolder={'Enter factor'}
-            inputProcess={function (value: string): string {
-              setFactor(+value);
-              return '';
-            }}
-          ></Input>
-        </div>
-      )}
-      {auth && (
-        <div>
-          <CounterUpdater operand={operand}></CounterUpdater>
-          <CounterSquare></CounterSquare>
-          <CounterMultiply factor={factor}></CounterMultiply>
-        </div>
-      )}
-      {auth && <Logout></Logout>}
-      {!auth && (
-        <div>
-          <p>Please enter username with 'admin':</p>
-          <Login loginName={validateName}></Login>
-        </div>
-      )}
-    </div>
-  );
 }
-
 export default App;
