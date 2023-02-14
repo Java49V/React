@@ -18,11 +18,7 @@ function App() {
               <Route index element={<Home/>}></Route>
               <Route path='customers' element={<Customers/>}/>
               <Route path='orders' element={<Orders/>}></Route>
-              <Route path='products' element={<Navigator
-               className={productsConfig.className} routes={productsConfig.routes}/>}>
-                    <Route path='dairy' element={<DairyProducts/>}/>
-                    <Route path='bread' element={<BreadProducts/>}/>
-              </Route>
+              
           </Route>
               
       </Routes>
