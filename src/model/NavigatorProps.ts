@@ -1,4 +1,8 @@
 export type NavigatorProps = {
-    className: string;
-    routes: {path: string, label: string}[];
-}
+  routers: Array<RoutersProps>;
+  //RoutersProps[]
+};
+type RoutersProps = {
+  path: string;
+  label: string;
+};
