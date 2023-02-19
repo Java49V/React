@@ -1,29 +1,86 @@
-import { Box, List, ListItem, Typography } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { Box, Button, IconButton } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 import { Employee } from '../../model/Employee';
+import { DataGrid, GridColumns, GridSelectionModel } from '@mui/x-data-grid';
+import React from 'react';
+import './table.css';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { employeesAction } from '../../redux/employeesSlice';
 
 export const Employees: React.FC = () => {
+  const columns = React.useRef<GridColumns>([
+    {
+      field: 'id',
+      headerClassName: 'header',
+      headerName: 'ID',
+      flex: 1,
+      headerAlign: 'center',
+      align: 'center',
+    },
+    {
+      field: 'name',
+      headerClassName: 'header',
+      headerName: 'Employee Name',
+      flex: 1,
+      headerAlign: 'center',
+      align: 'center',
+    },
+    {
+      field: 'birthDate',
+      headerClassName: 'header',
+      headerName: 'Date of Birth',
+      flex: 1,
+      type: 'date',
+      align: 'center',
+      headerAlign: 'center',
+    },
+    {
+      field: 'department',
+      headerClassName: 'header',
+      headerName: 'Department',
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+    },
+    {
+      field: 'salary',
+      headerClassName: 'header',
+      headerName: 'Salary (NIS)',
+      flex: 0.8,
+      type: 'number',
+      align: 'center',
+      headerAlign: 'center',
+    },
+  ]);
   const employees = useSelector<any, Employee[]>(
     (state) => state.employees.employees
   );
+  const [selectionItems, setSelectionModel] =
+    React.useState<GridSelectionModel>([]);
+  console.log(selectionItems);
+  const dispatch = useDispatch();
   return (
-    <Box
-      sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-    >
-      {!employees.length && (
-        <Typography sx={{ fontSize: '2em' }}>Not employees</Typography>
+    <Box sx={{ height: '50vh', width: '50vw' }}>
+      <DataGrid
+        columns={columns.current}
+        rows={employees}
+        checkboxSelection
+        onSelectionModelChange={(newSelectionModel) => {
+          setSelectionModel(newSelectionModel);
+        }}
+        selectionModel={selectionItems}
+      />
+      {!!selectionItems.length && (
+        <IconButton
+          aria-label="delete"
+          size="large"
+          onClick={() =>
+            dispatch(employeesAction.deleteEmployee(selectionItems))
+          }
+        >
+          <DeleteIcon fontSize="inherit" />
+        </IconButton>
       )}
-      {employees.length && <List>{getListEmployees(employees)}</List>}
     </Box>
   );
 };
-function getListEmployees(employees: Array<Employee>): React.ReactNode {
-  return employees.map((emp, ind) => {
-    return (
-      <ListItem key={ind}>
-        {`ID: ${emp.id} NAME: ${emp.name} 
-        BIRTHDAY: ${emp.birthDate} DEPARTMENT: ${emp.department} SALARY: ${emp.salary}`}
-      </ListItem>
-    );
-  });
-}
