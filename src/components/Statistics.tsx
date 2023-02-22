@@ -2,7 +2,7 @@ import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 import { Box, Typography } from '@mui/material'
 import { Stat } from "../service/EmployeesService";
 import React from "react";
-import "./stat.css";
+import "./statTabel.css";
 type Props = {
     title: string;
     gridProps: Stat;
