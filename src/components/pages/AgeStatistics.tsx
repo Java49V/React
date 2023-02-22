@@ -1,23 +1,11 @@
-import { Box } from '@mui/material';
-import Typography from '@mui/material/Typography';
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { Employee } from '../../models/Employee';
-import { statAge } from '../../service/EmployeesService';
+import {useSelector} from 'react-redux';
+import { Employee } from '../../model/Employee';
 import { Statistics } from '../Statistics';
-
 export const AgeStatistics: React.FC = () => {
-  const employees = useSelector<any, Employee[]>(
-    (state) => state.employees.employees
-  );
-
-  return (
-    <Box sx={{ width: '50vw', height: '50vh' }}>
-      {employees.length ? (
-        <Statistics title={'Age statistic'} gridProps={statAge(employees)} />
-      ) : (
-        <Typography sx={{ fontSize: '1.7em' }}>No values</Typography>
-      )}
-    </Box>
-  );
-};
+    const employees: Employee[] = useSelector<any, Employee[]>(state => state.company.employees)
+    const employeesAge = employees.map(empl => ({
+        age: new Date().getFullYear() - new Date(empl.birthDate).getFullYear()
+    }))
+    return <Statistics title="Age Statistics" field="age" objects={employeesAge} />
+}

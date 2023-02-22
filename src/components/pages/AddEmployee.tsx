@@ -1,27 +1,14 @@
-import { Button, Stack } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { Employee } from '../../models/Employee';
-import { employeesAction } from '../../redux/employeesSlice';
+import React from 'react';
+import {Box, Button} from "@mui/material";
+import {useDispatch} from 'react-redux';
+import { employeesActions } from '../../redux/employees-slice';
 import { createRandomEmployee } from '../../service/EmployeesService';
-
 export const AddEmployee: React.FC = () => {
-  const employees = useSelector<any, Employee[]>(
-    (state) => state.employees.employees
-  );
-  const auth: string = useSelector<any, string>(
-    (state) => state.auth.authenticated
-  );
-  const dispatch = useDispatch();
-  return (
-    <Stack sx={{ width: '30vw'}}>
-      <Button
-        onClick={() =>
-          dispatch(employeesAction.addEmployee(createRandomEmployee(employees)))
-        }
-        disabled={auth.includes('admin') ? false : true}
-      >
-        Add employee
-      </Button>
-    </Stack>
-  );
-};
+    const dispatch = useDispatch();
+    return <Box>
+        <Button onClick={() => 
+            dispatch(employeesActions.addEmployee(createRandomEmployee()))}>
+                Add Random Employee
+            </Button>
+    </Box>
+}
