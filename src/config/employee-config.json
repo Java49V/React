@@ -1,15 +1,11 @@
 {
-  "minId": 1,
-  "maxID": 100000,
-  "department": [
-    "Sales",
-    "Engineering",
-    "Support",
-    "Development",
-    "Accounting"
-  ],
-  "minSalary": 7000,
-  "maxSalary": 50000,
-  "minBirthYear": 1965,
-  "maxBirthYear": 1995
+    "minId": 1,
+    "maxId": 10000,
+    "departments": [
+        "Developers", "QA-Testing", "Marketing", "Accounting", "Management"
+    ],
+    "minSalary": 7000,
+    "maxSalary": 50000,
+    "minBirthYear": 1965,
+    "maxBirthYear": 2000
 }

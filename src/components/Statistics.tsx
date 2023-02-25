@@ -1,58 +1,52 @@
-import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
-import { Box, Typography } from '@mui/material';
-import { Stat } from '../service/EmployeesService';
-import React from 'react';
-import './table.css';
-type Props = {
-  title: string;
-  gridProps: Stat;
-};
+import { Box, Typography } from "@mui/material"
+import { DataGrid, GridColumns } from "@mui/x-data-grid"
+import React from "react"
 
-export const Statistics: React.FC<Props> = ({ title, gridProps }) => {
-  const fieldName: Array<string> = Object.keys(gridProps);
-  const columns = React.useRef<GridColDef[]>([
+export type Props = {
+    field: string,
+    title: string,
+    object: any[]
+}
+
+const columns: GridColumns = [
     {
-      field: fieldName[0],
-      headerName: 'Minimal Value',
-      headerClassName: 'header',
-      headerAlign: 'center',
-      flex: 1,
-      cellClassName: 'cell',
-      align: 'center',
+        field: "minValue", headerName: "Minimal value", headerAlign: "center",
+        align: "center", headerClassName: "header", flex: 1
     },
     {
-      field: fieldName[1],
-      headerClassName: 'header',
-      headerName: 'Maximal Value',
-      headerAlign: 'center',
-      flex: 1,
-      cellClassName: 'cell',
-      align: 'center',
+        field: "maxValue", headerName: "Maximal value", headerAlign: "center",
+        align: "center", headerClassName: "header", flex: 1
     },
     {
-      field: fieldName[2],
-      headerClassName: 'header',
-      headerName: 'Average Value',
-      headerAlign: 'center',
-      flex: 1,
-      cellClassName: 'cell',
-      align: 'center',
-    },
-  ]);
-  const rows = React.useRef<GridRowsProp>([{ id: 1, ...gridProps }]);
-  return (
-    <Box sx={{ height: '50vh', width: '50vw' }}>
-      <Typography
-        sx={{
-          textAlign: 'center',
-          fontSize: '3em',
-          fontWeight: 'bold',
-          marginBottom: '4vh',
-        }}
-      >
-        {title}
-      </Typography>
-      <DataGrid columns={columns.current} rows={rows.current} />
-    </Box>
-  );
-};
+        field: "avgValue", headerName: "Average value", headerAlign: "center",
+        align: "center", headerClassName: "header", flex: 1
+    }
+]
+
+export const Statistics: React.FC<Props> = ({field, title, object}) => {
+    let statistics: any = {id: 1};
+    if(object.length > 0) {
+    const localObject: {minValue: number, maxValue: number, avgValue: number} = 
+    {
+        minValue: object[0][field],
+        maxValue: object[0][field],
+        avgValue: 0
+    };
+    statistics = object.reduce((res, cur) => {
+        if(res.minValue > cur[field]) {
+            res.minValue = cur[field]
+        } else if(res.maxValue < cur[field]) {
+            res.maxValue = cur[field]
+        }
+        res.avgValue += cur[field];
+        return res;
+    }, localObject);
+    statistics.id = 1;
+    statistics.avgValue = Math.round(statistics.avgValue / object.length)
+}
+return <Box sx={{ width: "60vw", height: "40Vh" }}>
+<Typography sx={{fontSize: "1.9em",
+ fontWeight: "bold", textAlign: "center"}}>{title}</Typography>
+<DataGrid columns={columns} rows={[statistics]} />
+</Box>
+}

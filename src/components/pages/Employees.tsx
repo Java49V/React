@@ -1,31 +1,19 @@
-import { Box } from '@mui/material';
+import { ListItem } from '@mui/material';
+import { Box } from '@mui/system';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Employee } from '../../models/Employee';
-import {
-  DataGrid,
-  GridActionsCellItem,
-  GridColumns,
-  GridSelectionModel,
-} from '@mui/x-data-grid';
-import React from 'react';
-import './table.css';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { employeesAction } from '../../redux/employeesSlice';
+import { GridActionsCellItem, GridColumns } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid/DataGrid';
 import { Edit } from '@mui/icons-material';
+import { employeeActions } from '../../redux/employeesSlice';
 
 export const Employees: React.FC = () => {
-  const auth: string = useSelector<any, string>(
+  const authUser = useSelector<any, string>(
     (state) => state.auth.authenticated
   );
+  const dispatch = useDispatch();
   const columns = React.useRef<GridColumns>([
-    {
-      field: 'id',
-      headerClassName: 'header',
-      headerName: 'ID',
-      flex: 1,
-      headerAlign: 'center',
-      align: 'center',
-    },
     {
       field: 'name',
       headerClassName: 'header',
@@ -37,61 +25,62 @@ export const Employees: React.FC = () => {
     {
       field: 'birthDate',
       headerClassName: 'header',
-      headerName: 'Date of Birth',
+      headerName: 'Birth Date',
       flex: 1,
-      type: 'date',
-      align: 'center',
       headerAlign: 'center',
+      align: 'center',
     },
     {
       field: 'department',
       headerClassName: 'header',
       headerName: 'Department',
       flex: 1,
-      align: 'center',
       headerAlign: 'center',
+      align: 'center',
     },
     {
       field: 'salary',
       headerClassName: 'header',
       headerName: 'Salary',
-      flex: 0.9,
-      type: 'number',
-      align: 'center',
+      flex: 1,
       headerAlign: 'center',
+      align: 'center',
     },
     {
       field: 'actions',
       type: 'actions',
-      getActions: (params) =>
-        auth.includes('admin')
+      getActions: (params) => {
+        return authUser.includes('admin')
           ? [
               <GridActionsCellItem
-                label="remove"
+                label="update"
                 icon={<Edit />}
-                onClick={() =>
-                  dispatch(employeesAction.updateEmployee(params.row))
-                }
-              />,
-              <GridActionsCellItem
-                label="remove"
-                icon={<DeleteIcon />}
-                onClick={() =>
-                  dispatch(employeesAction.removeEmployee(+params.id))
-                }
+                onClick={() => {
+                  const empl = employees.find((e) => e.id == +params.id);
+                  if (empl) {
+                    const factor = empl.salary > 20000 ? 0.8 : 1.2;
+                    let emplCopy = { ...empl, salary: empl.salary * factor };
+                    dispatch(employeeActions.updateEmployee(emplCopy));
+                  }
+                }}
               />,
             ]
-          : [],
+          : [];
+      },
     },
   ]);
   const employees = useSelector<any, Employee[]>(
-    (state) => state.employees.employees
+    (state) => state.company.employees
   );
-  const dispatch = useDispatch();
-
   return (
     <Box sx={{ height: '80vh', width: '80vw' }}>
-      <DataGrid columns={columns.current} rows={employees} />
+      <DataGrid columns={columns.current} rows={employees}></DataGrid>
     </Box>
   );
 };
+
+function getNavItems(employees: Employee[]): React.ReactNode {
+  return employees.map((el, i) => (
+    <ListItem key={i}>{JSON.stringify(el)}</ListItem>
+  ));
+}

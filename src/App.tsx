@@ -1,55 +1,43 @@
-import { BrowserRouter, Routes, Route, RouterProps } from 'react-router-dom';
-import './App.css';
-import { Box, Typography } from '@mui/material';
-import { layoutConfig } from './models/layout-config';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navigator } from './components/navigators/Navigator';
-import { Employees } from './components/pages/Employees';
 import { AddEmployee } from './components/pages/AddEmployee';
-import { AgeStatistics} from './components/pages/AgeStatistics';
-import { SalaryStatistics } from './components/pages/SalaryStatistics';
-import { useSelector } from 'react-redux';
+import { layoutConfig } from './config/layout-config';
 import { Login } from './components/pages/Login';
 import { Logout } from './components/pages/Logout';
-import { useEffect, useState } from 'react';
-import { NavigatorProps, RoutersProps } from './models/NavigatorProps';
+import {RoutesType} from './models/RoutesType'
+import { useSelector } from 'react-redux';
+import { AgeStatistics } from './components/pages/AgeStatistics';
+import { Employees } from './components/pages/Employees';
+import { SalaryStatistics } from './components/pages/SalaryStatistics';
+
+
 
 function App() {
-  const auth: string = useSelector<any, string>(
-    (state) => state.auth.authenticated
-  );
-  const [routes, setRoutes] = useState<RoutersProps[]>(layoutConfig.routers);
-  layoutConfig.routers.forEach((route, index) => {
-    if (route.path == 'logout') {
-      layoutConfig.routers[index].label = `UserName: ${auth} `;
-    }
-  });
+  const [routes, setRoutes] = useState<RoutesType[]>([]);
+  const authUser: string = useSelector<any, string>(state => state.auth.authenticated);
   useEffect(() => {
-    if (!auth) {
-      setRoutes(layoutConfig.routers.filter((route) => route.path == 'login'));
-    } else if (!auth.includes('admin')) {
-      setRoutes(layoutConfig.routers.filter((route) => route.flAuth));
-    } else {
-      setRoutes(layoutConfig.routers.filter((route) => route.flAdmin));
+    function getRoutes(): RoutesType[] {
+      return layoutConfig.routes.filter(r => (!authUser && !r.flAuth) || 
+      (authUser.includes('admin') && r.flAdmin) ||
+      (!!authUser && r.flAuth && !r.flAdmin))
     }
-  }, [auth]);
-
-  return (
-    <Box>
-      {/* {!auth && <Login></Login>} */}
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigator routers={routes}/>}>
-            <Route path="addEmployee" element={<AddEmployee/>}/>
-            <Route index element={<Employees />}></Route>
-            <Route path="ageStatistics" element={<AgeStatistics/>}/>
-            <Route path="salaryStatistics" element={<SalaryStatistics/>}/>
-            <Route path="logout" element={<Logout/>}/>
-            <Route path="login" element={<Login/>}/>
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </Box>
-  );
-}
+    setRoutes(getRoutes());
+  }, [authUser])
+  return <BrowserRouter>
+  <Routes>
+  <Route path='/' element={<Navigator 
+           routes={routes} />}>
+          <Route index element={<Employees/>}/>
+          <Route path='add' element={<AddEmployee/>}/>
+          <Route path='statistics/age' element={<AgeStatistics/>}/>
+          <Route path='statistics/salary' element={<SalaryStatistics/>}/>
+          <Route path='/login' element={<Login/>} />
+          <Route path='/logout' element={<Logout/>} />
+      </Route>
+          
+  </Routes>
+</BrowserRouter>
+  }
 
 export default App;

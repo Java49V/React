@@ -1,24 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Employee } from '../models/Employee';
 import { Company } from '../service/Company';
-
 const company = new Company();
 const initialState: { employees: Employee[] } = {
   employees: company.getAllEmployees(),
 };
 const employeesSlice = createSlice({
-  initialState: initialState,
-  name: 'employees',
+  initialState,
+  name: 'company',
   reducers: {
     addEmployee: (state, data) => {
       company.addEmployee(data.payload);
       state.employees = company.getAllEmployees();
-    },
-    deleteEmployee: (state, data) => {
-      const newEmployees: Employee[] = state.employees.filter(
-        (empl: Employee) => !data.payload.includes(empl.id)
-      );
-      state.employees = newEmployees;
     },
     removeEmployee: (state, data) => {
       company.removeEmployee(data.payload);
@@ -30,5 +23,6 @@ const employeesSlice = createSlice({
     },
   },
 });
-export const employeesAction = employeesSlice.actions;
+
+export const employeeActions = employeesSlice.actions;
 export const employeesReducer = employeesSlice.reducer;

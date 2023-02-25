@@ -1,25 +1,13 @@
-import { Box, Typography } from '@mui/material';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Employee } from '../../models/Employee';
-import { statSalary } from '../../service/EmployeesService';
 import { Statistics } from '../Statistics';
 
 export const SalaryStatistics: React.FC = () => {
   const employees = useSelector<any, Employee[]>(
-    (state) => state.employees.employees
+    (state) => state.company.employees
   );
-
   return (
-    <Box sx={{ width: '50vw', height: '50vh' }}>
-      {employees.length ? (
-        <Statistics
-          title={'Salary statistic'}
-          gridProps={statSalary(employees)}
-        />
-      ) : (
-        <Typography sx={{ fontSize: '1.9em' }}>No values</Typography>
-      )}
-    </Box>
+    <Statistics field="salary" title="Salary Statistic" object={employees} />
   );
 };
