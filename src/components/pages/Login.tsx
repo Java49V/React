@@ -1,19 +1,16 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import { authActions } from '../../redux/authSlice';
-import { Input } from './Input';
-
-export const Login: React.FC = () => {
-  const dispatch = useDispatch();
-  return (
-    <div>
-      <Input
-        placeHolder={'Enter username'}
-        inputProcess={function (value: string): string {
-          dispatch(authActions.login(value));
-          return '';
-        }}
-      ></Input>
-    </div>
-  );
-};
+import { authActions } from "../../redux/authSlice";
+import {useDispatch} from 'react-redux'
+import { Input } from "../Input";
+import React from "react";
+export const Login: React.FC = ()=>{
+    const dispatch = useDispatch();
+    
+    return <div>
+        <h3>Login</h3>
+        <Input placeHolder={"type username for login"} inputProcess={function (value: string): string {
+            dispatch(authActions.login(value))
+            return '';
+        } }></Input>
+        
+        </div>
+}

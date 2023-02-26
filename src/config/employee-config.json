@@ -1,11 +1,13 @@
 {
-    "minId": 1,
-    "maxId": 10000,
+    "minId": 10000,
+    "maxId": 99999,
     "departments": [
-        "Developers", "QA-Testing", "Marketing", "Accounting", "Management"
+        "Development", "QA", "Marketing", "Accounting", "Management"
     ],
     "minSalary": 7000,
     "maxSalary": 50000,
     "minBirthYear": 1965,
-    "maxBirthYear": 2000
+    "maxBirthYear": 2004,
+    "minGeneration": 1,
+    "maxGeneration": 300
 }

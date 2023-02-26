@@ -1,59 +1,34 @@
-import React, { useEffect, useRef } from 'react';
+import { Box, Button, TextField } from "@mui/material";
+import React, { useEffect } from "react"
+import { Alert } from "./Alert";
+type InputProps = {
+    placeHolder: string;
+    inputProcess: (value: string)=>string
+}
+export const Input: React.FC<InputProps> = ({placeHolder, inputProcess}) => {
+    let inputElement: HTMLInputElement | null
+   const inputId =
+    React.useRef(Math.round(Math.random() * 100000000) + '');
+    const [message, setMessage] = React.useState('')
+    function processGo(): void {
+       setMessage('')
+        const messageRet: string = inputProcess(inputElement!.value);
+        
+        if (messageRet == '') {
+            inputElement!.value = '';
+        } else {
+            
+            setMessage(messageRet);
 
-export type InputProps = {
-  placeHolder: string;
-  inputProcess: (value: string) => string;
-};
-
-export const Input: React.FC<InputProps> = ({ placeHolder, inputProcess }) => {
-  let inputElement: HTMLInputElement | null;
-  const inputId = useRef(Math.round(Math.random() * 10000000) + '');
-  const [message, setMessage] = React.useState('');
-  function processGo(): void {
-    setMessage('');
-    const messageRet = inputProcess(inputElement!.value);
-    if (messageRet == '') {
-      setMessage('');
-    } else {
-      setMessage(messageRet);
+        }
+        
     }
-  }
-  useEffect(() => {
-    inputElement = document.getElementById(inputId.current) as HTMLInputElement;
-  });
-  return (
-    <div>
-      <input id={inputId.current} placeholder={placeHolder} />
-      <button onClick={processGo}>GO</button>
-      {message && <Alert type={'error'} message={message} />}
-    </div>
-  );
-};
-type AlertProps = {
-  type: 'warn' | 'info' | 'error';
-  message: string;
-};
-export const Alert: React.FC<AlertProps> = ({ type, message }) => {
-  let backGround: 'red' | 'green' | 'yellow';
-  switch (type) {
-    case 'error':
-      backGround = 'red';
-      break;
-    case 'info':
-      backGround = 'green';
-      break;
-    case 'warn':
-      backGround = 'yellow';
-  }
-  return (
-    <p
-      style={{
-        backgroundColor: backGround,
-        color: 'white',
-        fontWeight: 'bold',
-      }}
-    >
-      {message}
-    </p>
-  );
-};
+    useEffect(() => {
+       inputElement = document.getElementById(inputId.current) as HTMLInputElement;
+    })
+    return <Box>
+        <TextField id={inputId.current} placeholder={placeHolder}/>
+        <Button onClick={processGo}>GO</Button>
+        {message && <Alert type={"error"} message={message}/>}
+    </Box>
+}
