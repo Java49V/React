@@ -1,71 +1,59 @@
+import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
 import { Box, Typography } from '@mui/material';
-import { DataGrid, GridColumns } from '@mui/x-data-grid';
+import { Stat } from '../service/EmployeesService';
 import React from 'react';
-import './pages/table.css';
+import './statTabel.css';
 type Props = {
   title: string;
-  field: string;
-  objects: any[];
+  gridProps: Stat;
 };
-const columns: GridColumns = [
-  {
-    field: 'minValue',
-    headerName: 'Minimal Value',
-    headerAlign: 'center',
-    align: 'center',
-    headerClassName: 'header',
-    flex: 1,
-  },
-  {
-    field: 'maxValue',
-    headerName: 'Maximal Value',
-    headerAlign: 'center',
-    align: 'center',
-    headerClassName: 'header',
-    flex: 1,
-  },
-  {
-    field: 'avgValue',
-    headerName: 'Average Value',
-    headerAlign: 'center',
-    align: 'center',
-    headerClassName: 'header',
-    flex: 1,
-  },
-];
-export const Statistics: React.FC<Props> = ({ title, field, objects }) => {
-  let statistics: any = { id: 1 };
-  if (objects.length > 0) {
-    const initialObject: {
-      minValue: number;
-      maxValue: number;
-      avgValue: number;
-    } = {
-      minValue: objects[0][field],
-      maxValue: objects[0][field],
-      avgValue: 0,
-    };
-    statistics = objects.reduce((res, cur) => {
-      if (res.minValue > cur[field]) {
-        res.minValue = cur[field];
-      } else if (res.maxValue < cur[field]) {
-        res.maxValue = cur[field];
-      }
-      res.avgValue += cur[field];
-      return res;
-    }, initialObject);
-    statistics.id = 1;
-    statistics.avgValue = Math.round(statistics.avgValue / objects.length);
-  }
 
+export const Statistics: React.FC<Props> = ({ title, gridProps }) => {
+  const fieldName: Array<string> = Object.keys(gridProps);
+  const columns = React.useRef<GridColDef[]>([
+    {
+      field: fieldName[0],
+      headerName: 'Minimal Value',
+      headerClassName: 'header',
+      headerAlign: 'center',
+      flex: 1,
+      cellClassName: 'cell',
+      align: 'center',
+    },
+    {
+      field: fieldName[1],
+      headerClassName: 'header',
+      headerName: 'Maximal Value',
+      headerAlign: 'center',
+      flex: 1,
+      cellClassName: 'cell',
+      align: 'center',
+    },
+    {
+      field: fieldName[2],
+      headerClassName: 'header',
+      headerName: 'Average Value',
+      headerAlign: 'center',
+      flex: 1,
+      cellClassName: 'cell',
+      align: 'center',
+    },
+  ]);
+  const rows = React.useRef<GridRowsProp>([{ id: 1, ...gridProps }]);
   return (
-    <Box sx={{ width: '50vw', height: '30Vh' }}>
+    <Box sx={{ height: '40vh', width: '40vw' }}>
       <Typography
-        sx={{ fontSize: '1.8em', fontWeight: 'bold', textAlign: 'center' }}
+        sx={{
+          textAlign: 'center',
+          fontSize: '2em',
+          fontWeight: 'bold',
+          marginBottom: '3vh',
+          color: 'info.main',
+        }}
       >
         {title}
       </Typography>
-      <DataGrid columns={columns} rows={[statistics]} />
+      <DataGrid columns={columns.current} rows={rows.current} />
     </Box>
   );
 };

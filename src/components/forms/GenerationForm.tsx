@@ -1,34 +1,41 @@
-import {FormControl, TextField, InputLabel, Select, Box, MenuItem, Button} from '@mui/material';
-import React from 'react';
+import { Box, Button, TextField } from '@mui/material';
+import { useState } from 'react';
 import employeeConfig from '../../config/employee-config.json';
-
 type Props = {
-    submitFn: (count: number) => void
-}
+  submitFn: (numEmployee: number) => void;
+};
+export const GenerationForm: React.FC<Props> = ({ submitFn }) => {
+  const { minNumEmpl, maxNumEmpl } = employeeConfig;
+  const [amount, setAmount] = useState(0);
+  function handlerAmount(event: any) {
+    //const name: string = event.target.value;
+    setAmount(event.target.value);
+  }
 
-export const GenerationForm: React.FC<Props> = (props) => {
-    const {minGeneration, maxGeneration} = employeeConfig;
+  function onSubmitFn(event: any) {
+    event.preventDefault();
+    submitFn(amount);
+    document.querySelector('form')!.reset();
+  }
 
-    const [count, setCount] = React.useState<number>(0);
-
-    function onSubmitFn(event: any) {
-        event.preventDefault();
-        props.submitFn(count);
-        document.querySelector('form')!.reset();
-     }
-     function handlerGeneration(event: any) {
-        setCount(+event.target.value);
-     }
-
-    return <Box>
-        <form onSubmit={onSubmitFn}>
-        <TextField label="employees generation" fullWidth required 
-            type="number" onChange={handlerGeneration}
-              helperText={`enter amount[${minGeneration}-${maxGeneration}]`}
-              inputProps = {{
-                min: `${minGeneration}`,max: `${maxGeneration}`
-              }}/>
-              <Button type="submit">Submit</Button>
-        </form>        
+  return (
+    <Box sx={{ height: '20vh' }}>
+      <form onSubmit={onSubmitFn}>
+        <TextField
+          type="number"
+          required
+          fullWidth
+          label="Number employees"
+          onChange={handlerAmount}
+          inputProps={{
+            min: `${minNumEmpl}`,
+            max: `${maxNumEmpl}`,
+          }}
+          InputLabelProps={{ shrink: true }}
+          helperText={`enter number in range ${minNumEmpl}-${maxNumEmpl}`}
+        />
+        <Button type="submit">Generate</Button>
+      </form>
     </Box>
-}
+  );
+};

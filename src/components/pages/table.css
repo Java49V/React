@@ -1,6 +1,5 @@
-.header {
-    font-weight: bolder;
+.header {   
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 4 em;
-    font-style: normal;
+    font-size: 1.3em;
+    font-weight: bold;
 }

@@ -1,6 +1,16 @@
-import { authActions } from "../../redux/authSlice";
-import {useDispatch} from 'react-redux'
-export const Logout: React.FC = ()=>{
-    const dispatch = useDispatch();
-    return <button onClick={() => dispatch(authActions.logout())}>Logout</button>
-}
+import { Button } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { authActions } from '../../redux/authSlice';
+
+export const Logout: React.FC = () => {
+  const dispatch = useDispatch();
+  return (
+    <Button
+      onClick={() => {
+        dispatch(authActions.logout());
+      }}
+    >
+      Logout
+    </Button>
+  );
+};
