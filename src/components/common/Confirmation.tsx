@@ -1,26 +1,17 @@
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from '@mui/material';
 import React from 'react';
+import {Button, Box, Dialog,DialogActions,
+     DialogContent, DialogContentText, DialogTitle} from '@mui/material'
 
 type Props = {
-  title: string;
-  content: string;
-  confirmFn: (isOk: boolean) => void;
-  open: boolean;
-};
-export const Confirmation: React.FC<Props> = ({
-  title,
-  content,
-  confirmFn,
-  open,
-}) => {
+    title: string;
+    content: string;
+    confirmFn: (isOk: boolean) => void;
+    open: boolean
+}
+
+
+
+export  const Confirmation: React.FC<Props> = ({title, confirmFn, content, open}) => {
   const handleClose = (isOk: boolean) => {
     confirmFn(isOk);
   };
@@ -29,11 +20,13 @@ export const Confirmation: React.FC<Props> = ({
     <Box>
       <Dialog
         open={open}
-        onClose={() => handleClose(false)}
+        onClose={() =>handleClose(false)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {title}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             {content}
@@ -42,10 +35,11 @@ export const Confirmation: React.FC<Props> = ({
         <DialogActions>
           <Button onClick={() => handleClose(false)}>Cancel</Button>
           <Button onClick={() => handleClose(true)} autoFocus>
-            Ok
+            OK
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+      </Box>
+    
   );
-};
+}

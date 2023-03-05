@@ -1,37 +1,42 @@
-import { Alert, Box } from '@mui/material';
-import { useDispatch } from 'react-redux';
-import { Employee } from '../../models/Employee';
-import { employeesAction } from '../../redux/employeesSlice';
-import { createRandomEmployee } from '../../service/EmployeesService';
-import { GenerationForm } from '../forms/GenerationForm';
-import CheckIcon from '@mui/icons-material/Check';
-import { useState } from 'react';
-
+import React from "react";
+import {Box, TextField, Button, Alert} from '@mui/material';
+import {useDispatch} from 'react-redux';
+import generationConfig from '../../config/generation-config.json';
+import { employeesActions } from "../../redux/employees-slice";
+import { createRandomEmployee } from "../../service/EmployeesService";
 export const Generation: React.FC = () => {
-  const dispatch = useDispatch();
-  const [numEmpl, setNumEmpl] = useState(0);
+    const dispatch = useDispatch();
+    const {defaultAmount, minAmount, maxAmount, alertTimeout} = generationConfig;
+    const [amount, setAmount] = React.useState<number>(defaultAmount);
+    const [flAlertSuccess, setAlertAccess] = React.useState<boolean>(false);
+    function handlerAmount(event: any): void {
+        setAmount(+event.target.value);
+    }
+    function onSubmitFn(event: any) {
+        event.preventDefault();
+        for(let i = 0; i < amount; i++) {
+            dispatch(employeesActions.addEmployee(createRandomEmployee()));
+        }
+        setAlertAccess(true);
+        setTimeout(() => setAlertAccess(false),alertTimeout );
+    }
+    
 
-  return (
-    <Box>
-      <GenerationForm
-        submitFn={(numEmployee: number) => {
-          console.log(numEmployee);
-          for (let i: number = 0; i < numEmployee; i++) {
-            let employeesRandom: Employee = createRandomEmployee();
-            dispatch(employeesAction.addEmployee(employeesRandom));
-          }
-          setNumEmpl(numEmployee);
-          setTimeout(() => {
-            setNumEmpl(0);
-          }, 4000);
-        }}
-      />
-      {!!numEmpl && (
-        <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
-          {' '}
-          {numEmpl} employees was successe generated
-        </Alert>
-      )}
+
+    return <Box>
+        <form onSubmit={onSubmitFn} >
+            <TextField label="amount of employee generated" fullWidth required 
+            type="number" onChange={handlerAmount}
+             value={amount}
+              helperText={`enter amount of employee objects in range [${minAmount}-${maxAmount}]`}
+              inputProps = {{
+                min: `${minAmount}`,
+                max: `${maxAmount}`
+              }} />
+              <Button type="submit">Generate</Button>
+
+        </form>
+        {flAlertSuccess && <Alert severity="success">Generated {amount} random employee objects</Alert>}
+         
     </Box>
-  );
-};
+}

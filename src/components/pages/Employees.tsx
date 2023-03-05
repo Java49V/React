@@ -1,185 +1,108 @@
-import { Box } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { Employee } from '../../models/Employee';
+import React, { ReactNode, useRef, useState } from 'react';
+import { Box, IconButton, List, ListItem, Typography } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
+import { Employee } from '../../model/Employee';
 import { DataGrid, GridActionsCellItem, GridColumns } from '@mui/x-data-grid';
-import React, { useRef, useState } from 'react';
-import './table.css';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { employeesAction } from '../../redux/employeesSlice';
-import { Edit, PersonAdd } from '@mui/icons-material';
+import { Delete, Edit, PersonAdd } from '@mui/icons-material';
+import './table.css'
+import { employeesActions } from '../../redux/employees-slice';
 import { EmployeeForm } from '../forms/EmployeeForm';
-import { UserDialog } from '../UserDialog';
-
+import { Confirmation } from '../common/Confirmation';
 export const Employees: React.FC = () => {
-  const dispatch = useDispatch();
-  const auth: string = useSelector<any, string>(
-    (state) => state.auth.authenticated
-  );
-  const columns = React.useRef<GridColumns>([
-    {
-      field: 'id',
-      headerClassName: 'header',
-      headerName: 'ID',
-      flex: 0.6,
-      headerAlign: 'center',
-      align: 'center',
-    },
-    {
-      field: 'name',
-      headerClassName: 'header',
-      headerName: 'Employee Name',
-      flex: 1,
-      headerAlign: 'center',
-      align: 'center',
-    },
-    {
-      field: 'birthDate',
-      headerClassName: 'header',
-      headerName: 'Date of Birth',
-      flex: 1,
-      type: 'date',
-      align: 'center',
-      headerAlign: 'center',
-    },
-    {
-      field: 'department',
-      headerClassName: 'header',
-      headerName: 'Department',
-      flex: 1,
-      align: 'center',
-      headerAlign: 'center',
-    },
-    {
-      field: 'salary',
-      headerClassName: 'header',
-      headerName: 'Salary (NIS)',
-      flex: 0.8,
-      type: 'number',
-      align: 'center',
-      headerAlign: 'center',
-    },
-    {
-      field: 'actions',
-      type: 'actions',
-      getActions: (params) =>
-        auth.includes('admin')
-          ? [
-              <GridActionsCellItem
-                label="edit"
-                icon={<Edit />}
-                onClick={() => {
-                  setFlEdit(true);
-                  emplIDEdit.current = +params.id;
-                }}
-              />,
-              <GridActionsCellItem
-                label="remove"
-                icon={<DeleteIcon />}
-                onClick={() => removeEmployee(+params.id)}
-              />,
-              <GridActionsCellItem
-                label="add"
-                icon={<PersonAdd />}
-                onClick={() => {
-                  setFlAdd(true);
-                  setOpen(true);
-                  title.current = 'Add an employee?';
-                  message.current = 'You are going to create a new Employee.';
-                }}
-              />,
-            ]
-          : [],
-    },
-  ]);
+    const dispatch = useDispatch();
+    const authUser = useSelector<any, string>(state => state.auth.authenticated);
+    const editId = useRef<number>(0);
+    const columns = React.useRef<GridColumns>([
+        {
+            field: 'name', headerClassName: 'header', headerName: 'Employee Name',
+            flex: 1, headerAlign: 'center', align: 'center'
+        },
+        {
+            field: 'birthDate', headerName: 'Date of Birth', flex: 1, headerClassName: 'header',
+            type: "date", headerAlign: 'center', align: 'center'
+        },
+        {
+            field: 'department', headerName: 'Department', headerClassName: 'header',
+            flex: 1, headerAlign: 'center', align: 'center'
+        },
+        {
+            field: 'salary', headerName: "Salary (NIS)", headerClassName: 'header',
+            flex: 0.7, type: "number", headerAlign: 'center', align: 'center'
+        },
+        {
+            field: 'actions', type: "actions", getActions: (params) => {
+                return authUser.includes('admin') ? [
+                    <GridActionsCellItem label="remove" icon={<Delete />}
+                        onClick={() => removeEmployee(+params.id)
+                            } />,
+                    <GridActionsCellItem label="update" icon={<Edit />}
+                        onClick={() => {
+                            editId.current = +params.id;
+                            setFlEdit(true)
+                        }
+                        } />
+                ] : [];
+            }
+        }
 
-  const employees = useSelector<any, Employee[]>(
-    (state) => state.employees.employees
-  );
-  const [flEdit, setFlEdit] = useState(false);
-  const [flAdd, setFlAdd] = useState(false);
-  const [open, setOpen] = useState(false);
-
-  const title = useRef('');
-  const message = useRef('');
-  const emplToUpdate = useRef<Employee>();
-  const confirmFn = useRef<(isOk: boolean) => void>((isOK: boolean) => {});
-  const emplIDRemove = useRef<number>(0);
-  const emplIDEdit = useRef<number>(0);
-
-  function getLayout(): JSX.Element {
-    let component: JSX.Element = (
-      <DataGrid columns={columns.current} rows={employees} />
-    );
-    if (flEdit) {
-      component = (
-        <EmployeeForm
-          submitFn={function (empl: Employee): boolean {
-            setOpen(true);
-            updateEmployee();
-            emplToUpdate.current = empl;
-            setFlEdit(false);
-            return true;
-          }}
-          employeeUpdate={employees.find(
-            (empl) => empl.id === emplIDEdit.current
-          )}
-        />
-      );
-    } else if (flAdd) {
-      component = (
-        <EmployeeForm
-          submitFn={function (empl: Employee): boolean {
-            dispatch(employeesAction.addEmployee(empl));
-            setFlAdd(false);
-            return true;
-          }}
-        />
-      );
+    ])
+    const [flEdit, setFlEdit] = useState<boolean>(false);
+    const [flAdd, setFlAdd] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
+    const title = useRef<string>("");
+    const content = useRef<string>("");
+    const confirmFn = useRef<(isOk: boolean)=>void>((isOK)=> {});
+    const employees = useSelector<any, Employee[]>(state => state.company.employees);
+    const idRemoved = useRef<number>(0);
+    const employeeToUpdate = useRef<Employee>();
+    function removeEmployee(id: number) {
+        title.current = "Remove Employee object?";
+        const employee = employees.find(empl => empl.id == id);
+        content.current = `You are going remove employee with id ${employee?.name}`;
+        idRemoved.current = id;
+        confirmFn.current = actualRemove;
+        setOpen(true);
     }
-    return component;
-  }
-  function removeEmployee(id: number) {
-    title.current = 'Delete an employee?';
-    const currentEmpl = employees.find((empl) => empl.id === id);
-    message.current = `You are going to delete an employee: ${currentEmpl?.name}`;
-    emplIDRemove.current = id;
-    console.log(emplIDRemove);
-    confirmFn.current = actialRemove;
-    setOpen(true);
-  }
-  function actialRemove(isOk: boolean) {
-    if (isOk) {
-      console.log(emplIDRemove);
-      dispatch(employeesAction.removeEmployee(emplIDRemove.current));
+    function actualRemove(isOk: boolean) {
+        if (isOk) {
+            dispatch(employeesActions.removeEmployee(idRemoved.current))
+        }
+        setOpen(false);
     }
-    setOpen(false);
-  }
-
-  function updateEmployee() {
-    title.current = 'Update employee?';
-    const currentEmpl = employees.find(
-      (empl) => empl.id === emplIDEdit.current
-    );
-    message.current = `You will now update employee ${currentEmpl?.name} `;
-    confirmFn.current = actialUpdate;
-  }
-  const actialUpdate = (isOK: boolean) => {
-    if (isOK) {
-      dispatch(employeesAction.updateEmployee(emplToUpdate?.current));
+    function actualUpdate(isOk: boolean) {
+        if(isOk) {
+            dispatch(employeesActions.updateEmployee(employeeToUpdate.current));
+        }
+        setOpen(false);
     }
-    setOpen(false);
-  };
-
-  return (
-    <Box sx={{ height: '65vh', width: '65vw' }}>
-      {getLayout()}
-      <UserDialog
-        messageContent={message.current}
-        buttonsName={{ agree: 'Ok', disagree: 'Cancel' }}
-        confirmFn={confirmFn.current}
-        open={open}
-        title={title.current}
-      />
+    function getComponent(): ReactNode {
+        let res: ReactNode = <Box sx={{ height: "70vh", width: "80vw" }}>
+                <DataGrid columns={columns.current} rows={employees}/>
+                {authUser.includes("admin") && <IconButton onClick={() => setFlAdd(true)}><PersonAdd/></IconButton>}
+        </Box>
+        if (flEdit) {
+            res = <EmployeeForm submitFn={function (empl: Employee): boolean {
+                
+                title.current = "Update Employee object?";
+                content.current = `You are going update Employee ${empl.name}`;
+                employeeToUpdate.current = empl;
+                confirmFn.current = actualUpdate;
+                setOpen(true);
+                setFlEdit(false);
+                return true;
+            } } employeeUpdate = {employees.find(empl => empl.id == editId.current)} />
+        } else if (flAdd) {
+            res = <EmployeeForm submitFn={function (empl: Employee): boolean {
+                dispatch(employeesActions.addEmployee(empl));
+                setFlAdd(false);
+                return true;
+            } }/>
+        }
+        return res;
+    }
+    return <Box sx={{ height: "80vh", width: "80vw" }}>
+        {getComponent()}
+        <Confirmation confirmFn={confirmFn.current} open={open}
+         title={title.current} content={content.current}></Confirmation>
     </Box>
-  );
-};
+}
