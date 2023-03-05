@@ -19,7 +19,7 @@ export const GenerationForm: React.FC<Props> = ({ submitFn }) => {
   }
 
   return (
-    <Box sx={{ height: '20vh' }}>
+    <Box sx={{ height: '10vh' }}>
       <form onSubmit={onSubmitFn}>
         <TextField
           type="number"
@@ -32,7 +32,7 @@ export const GenerationForm: React.FC<Props> = ({ submitFn }) => {
             max: `${maxNumEmpl}`,
           }}
           InputLabelProps={{ shrink: true }}
-          helperText={`enter number in range ${minNumEmpl}-${maxNumEmpl}`}
+          helperText={`enter range number ${minNumEmpl}-${maxNumEmpl}`}
         />
         <Button type="submit">Generate</Button>
       </form>

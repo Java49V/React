@@ -10,47 +10,44 @@ import {
 } from '@mui/material';
 
 type Props = {
+  title: string;
   messageContent: string;
-  flDisAction: () => void;
-  flAction?: () => void;
+  confirmFn: (isOk: boolean) => void;
+  open: boolean;
   buttonsName?: { agree: string; disagree: string };
 };
 
 export const UserDialog: React.FC<Props> = ({
   messageContent,
-  flDisAction,
-  flAction,
+  confirmFn,
+  title,
+  open,
   buttonsName = { agree: 'agree', disagree: 'disagree' },
 }) => {
-  const [open, setOpen] = useState(true);
-  const handleClose = () => {
-    setOpen(false);
-    flDisAction();
-  };
-  const handelContinue = () => {
-    setOpen(false);
-    if (flAction) {
-      flAction();
-    }
+  const handleClose = (isOk: boolean) => {
+    confirmFn(isOk);
   };
 
   return (
     <Dialog
       open={open}
-      onClose={handleClose}
+      onClose={() => handleClose(false)}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
+      <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           {messageContent}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handelContinue} autoFocus>
+        <Button onClick={() => handleClose(true)} autoFocus>
           {buttonsName.agree}
         </Button>
-        <Button onClick={handleClose}>{buttonsName.disagree}</Button>
+        <Button onClick={() => handleClose(false)}>
+          {buttonsName.disagree}
+        </Button>
       </DialogActions>
     </Dialog>
   );

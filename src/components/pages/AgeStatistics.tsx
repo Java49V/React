@@ -12,7 +12,7 @@ export const AgeStatistics: React.FC = () => {
   );
 
   return (
-    <Box sx={{ width: '50vw', height: '50vh' }}>
+    <Box sx={{ width: '38vw', height: '40vh' }}>
       {employees.length ? (
         <Statistics title={'Age Statistics'} gridProps={statAge(employees)} />
       ) : (

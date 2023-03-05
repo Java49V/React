@@ -16,7 +16,7 @@ export const Navigator: React.FC<NavigatorProps> = ({ routers }) => {
     }
   }, [routers]);
   return (
-    <Box sx={{ marginTop: '15vh' }}>
+    <Box sx={{ marginTop: '12vh' }}>
       <AppBar sx={{ backgroundColor: 'lightblue' }}>
         <Tabs
           value={tabNumber >= routers.length ? tabNumber == 0 : tabNumber}
@@ -25,7 +25,7 @@ export const Navigator: React.FC<NavigatorProps> = ({ routers }) => {
           {routers.map((router, index) => (
             <Tab
               component={Link}
-              to={'/' + router.path}
+              to={router.path}
               label={router.label}
               key={index}
             ></Tab>

@@ -43,7 +43,6 @@ export function statSalary(employees: Array<Employee>): Stat {
   );
 }
 
-//export function createRandomEmployee(employees: Employee[]): Employee {
 export function createRandomEmployee(): Employee {
   return {
     // id: getID(employees),

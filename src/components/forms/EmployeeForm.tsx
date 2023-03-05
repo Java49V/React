@@ -63,7 +63,9 @@ export const EmployeeForm: React.FC<Props> = ({ submitFn, employeeUpdate }) => {
   function onResetFn(event: any) {
     setEmployee(employeeUpdate ? employeeUpdate : initialEmployee);
   }
-  const styleGrid = { backgroundColor: "white" };
+
+  const styleGrid = { backgroundColor: 'white' };
+  const styleFontSize = { fontSize: '0.7em' };
 
   return (
     <Grid

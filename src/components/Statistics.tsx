@@ -41,7 +41,7 @@ export const Statistics: React.FC<Props> = ({ title, gridProps }) => {
   ]);
   const rows = React.useRef<GridRowsProp>([{ id: 1, ...gridProps }]);
   return (
-    <Box sx={{ height: '40vh', width: '40vw' }}>
+    <Box sx={{ height: '50vh', width: '50vw' }}>
       <Typography
         sx={{
           textAlign: 'center',
