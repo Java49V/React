@@ -31,3 +31,17 @@ const employeesSlice = createSlice({
 })
 export const employeesAction = employeesSlice.actions;
 export const employeesReducer = employeesSlice.reducer;
+
+
+
+ // let newEmployees: Employee[] = state.employees.slice();
+            //   newEmployees.forEach((empl,ind) => data.payload.includes(empl.id)? state.employees.splice(ind,1): empl
+            //      )
+              //   console.log(state.employees);
+            //    let newEmployees = state.employees.map((empl: Employee) => {
+            //         if (!data.payload.includes(empl.id)) {
+            //             return empl;
+            //         }
+            //     }
+            //     )
+            //     state.employees = newEmployees;

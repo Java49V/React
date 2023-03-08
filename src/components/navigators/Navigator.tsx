@@ -1,38 +1,31 @@
-import { NavigatorProps } from '../../models/NavigatorProps';
-import React from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { AppBar, Box, Tab, Tabs } from '@mui/material';
+import { NavigatorProps } from "../../models/NavigatorProps";
+import React from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import { AppBar, Box, Tab, Tabs } from "@mui/material";
 
 export const Navigator: React.FC<NavigatorProps> = ({ routers }) => {
-  const [tabNumber, setTabNumber] = React.useState(0);
-  function changeTabNumber(event: any, newNumber: number) {
-    setTabNumber(newNumber);
-  }
-  const navigate = useNavigate();
-  React.useEffect(() => {
-    setTabNumber(0);
-    if (routers.length != 0) {
-      navigate(routers[0].path);
+    const [tabNumber, setTabNumber] = React.useState(0);
+    function changeTabNumber(event: any, newNumber: number) {
+        setTabNumber(newNumber);
+
     }
-  }, [routers]);
-  return (
-    <Box sx={{ marginTop: '12vh' }}>
-      <AppBar sx={{ backgroundColor: 'lightblue' }}>
-        <Tabs
-          value={tabNumber >= routers.length ? tabNumber == 0 : tabNumber}
-          onChange={changeTabNumber}
-        >
-          {routers.map((router, index) => (
-            <Tab
-              component={Link}
-              to={router.path}
-              label={router.label}
-              key={index}
-            ></Tab>
-          ))}
-        </Tabs>
-      </AppBar>
-      <Outlet></Outlet>
+    const navigate = useNavigate();
+    React.useEffect(() => {
+        setTabNumber(0);
+        if (routers.length != 0) {
+            navigate(routers[0].path);
+        }
+
+    }, [routers]);
+    return <Box sx={{ marginTop: "15vh" }}>
+        <AppBar sx={{ backgroundColor: "lightgrey" }}>
+            <Tabs value={tabNumber >= routers.length ? tabNumber == 0 : tabNumber} onChange={changeTabNumber}>
+                {routers.map((router, index) =>
+                    <Tab component={Link} to={router.path} label={router.label} key={index} ></Tab>
+                )
+                }
+            </Tabs>
+        </AppBar>
+        <Outlet></Outlet>
     </Box>
-  );
-};
+}

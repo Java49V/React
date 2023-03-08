@@ -1,7 +1,7 @@
-export type Employee = {
-  id: number;
-  name: string;
-  birthDate: string;
-  department: string;
-  salary: number;
-};
+export type Employee ={
+    id:number;
+    name:string;
+    birthDate: string;
+    department: string;
+    salary: number;
+}
